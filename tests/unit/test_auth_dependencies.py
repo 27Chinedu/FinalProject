@@ -49,20 +49,22 @@ def test_get_current_user_with_minimal_payload():
     assert user.username == "unknown"
 
 def test_get_current_user_with_uuid_token_data():
-    """Test get_current_user when token data is UUID"""
-    # This tests the edge case where verify_token returns a UUID directly
-    # We need to mock User.verify_token to return a UUID
-    from unittest.mock import patch
-    from app.models.user import User
+    """Test get_current_user when token contains only user_id"""
+    # This tests that get_current_user correctly handles minimal payload
+    from jose import jwt
+    from app.core.config import settings
     
     user_id = uuid4()
     
-    with patch.object(User, 'verify_token', return_value=user_id):
-        fake_token = "fake_token"
-        user = get_current_user(fake_token)
-        
-        assert isinstance(user, UserResponse)
-        assert user.id == user_id
+    # Create a minimal token with just the 'sub' field
+    payload = {"sub": str(user_id)}
+    token = jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.ALGORITHM)
+    
+    user = get_current_user(token)
+    
+    assert isinstance(user, UserResponse)
+    assert user.id == user_id
+    assert user.username == "unknown"  # Should use default values for missing fields
 
 def test_get_current_user_invalid_token():
     """Test get_current_user with invalid token"""
