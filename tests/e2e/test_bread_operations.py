@@ -229,19 +229,15 @@ def test_create_calculation_empty_type_negative(page: Page, fastapi_server: str)
     page.fill('input[name="inputs"]', '1, 2, 3')
     page.click('button[type="submit"]')
     
-    # Wait for error alert to appear (client-side validation shows this)
-    page.wait_for_timeout(500)
+    # Wait for error alert to appear and have content
+    error_message = page.locator('#errorMessage')
     
-    # Check that error alert becomes visible OR the form shows an error
-    # The JavaScript showError function removes the 'hidden' class
-    error_alert = page.locator('#errorAlert')
-    
-    # Wait for the error alert to not have the hidden class
-    expect(error_alert).not_to_have_class('hidden', timeout=5000)
+    # Wait for the error message to have text content (not empty)
+    expect(error_message).not_to_be_empty(timeout=5000)
     
     # Verify error message content
-    error_text = page.locator('#errorMessage').text_content()
-    assert 'type' in error_text.lower() or 'select' in error_text.lower() or 'operation' in error_text.lower()
+    error_text = error_message.text_content()
+    assert 'type' in error_text.lower() or 'select' in error_text.lower() or 'operation' in error_text.lower(), f"Expected error about type/select/operation, got: '{error_text}'"
 
 def test_create_calculation_empty_inputs_negative(page: Page, fastapi_server: str):
     """Test creating calculation with empty inputs fails"""
@@ -260,14 +256,11 @@ def test_create_calculation_empty_inputs_negative(page: Page, fastapi_server: st
     page.select_option('select[name="type"]', 'addition')
     page.click('button[type="submit"]')
     
-    # Wait for validation
-    page.wait_for_timeout(500)
+    # Wait for error message to have content
+    error_message = page.locator('#errorMessage')
+    expect(error_message).not_to_be_empty(timeout=5000)
     
-    # Check error alert is visible (not hidden)
-    error_alert = page.locator('#errorAlert')
-    expect(error_alert).not_to_have_class('hidden', timeout=5000)
-    
-    error_text = page.locator('#errorMessage').text_content()
+    error_text = error_message.text_content()
     assert 'empty' in error_text.lower() or 'required' in error_text.lower() or 'at least' in error_text.lower()
 
 def test_create_calculation_single_input_negative(page: Page, fastapi_server: str):
@@ -287,14 +280,11 @@ def test_create_calculation_single_input_negative(page: Page, fastapi_server: st
     page.fill('input[name="inputs"]', '42')
     page.click('button[type="submit"]')
     
-    # Wait for validation
-    page.wait_for_timeout(500)
+    # Wait for error message to have content
+    error_message = page.locator('#errorMessage')
+    expect(error_message).not_to_be_empty(timeout=5000)
     
-    # Check error alert is visible
-    error_alert = page.locator('#errorAlert')
-    expect(error_alert).not_to_have_class('hidden', timeout=5000)
-    
-    error_text = page.locator('#errorMessage').text_content()
+    error_text = error_message.text_content()
     # Check for "at least 2" case-insensitively
     assert 'at least 2' in error_text.lower() or 'two' in error_text.lower()
 
@@ -315,14 +305,11 @@ def test_create_calculation_non_numeric_inputs_negative(page: Page, fastapi_serv
     page.fill('input[name="inputs"]', 'abc, def')
     page.click('button[type="submit"]')
     
-    # Wait for validation
-    page.wait_for_timeout(500)
+    # Wait for error message to have content
+    error_message = page.locator('#errorMessage')
+    expect(error_message).not_to_be_empty(timeout=5000)
     
-    # Check error alert is visible
-    error_alert = page.locator('#errorAlert')
-    expect(error_alert).not_to_have_class('hidden', timeout=5000)
-    
-    error_text = page.locator('#errorMessage').text_content()
+    error_text = error_message.text_content()
     assert 'number' in error_text.lower() or 'valid' in error_text.lower() or 'numeric' in error_text.lower()
 
 def test_create_calculation_division_by_zero_negative(page: Page, fastapi_server: str):
@@ -342,14 +329,11 @@ def test_create_calculation_division_by_zero_negative(page: Page, fastapi_server
     page.fill('input[name="inputs"]', '100, 0')
     page.click('button[type="submit"]')
     
-    # Wait for validation
-    page.wait_for_timeout(500)
+    # Wait for error message to have content
+    error_message = page.locator('#errorMessage')
+    expect(error_message).not_to_be_empty(timeout=5000)
     
-    # Check error alert is visible
-    error_alert = page.locator('#errorAlert')
-    expect(error_alert).not_to_have_class('hidden', timeout=5000)
-    
-    error_text = page.locator('#errorMessage').text_content()
+    error_text = error_message.text_content()
     assert 'zero' in error_text.lower() or 'divide' in error_text.lower()
 
 def test_update_calculation_invalid_inputs_negative(page: Page, fastapi_server: str):
@@ -379,14 +363,11 @@ def test_update_calculation_invalid_inputs_negative(page: Page, fastapi_server: 
     page.fill('#modalInputs', '42')
     page.click('#saveBtn')
     
-    # Wait for validation
-    page.wait_for_timeout(500)
+    # Wait for error message to have content
+    error_message = page.locator('#errorMessage')
+    expect(error_message).not_to_be_empty(timeout=5000)
     
-    # Check error alert is visible
-    error_alert = page.locator('#errorAlert')
-    expect(error_alert).not_to_have_class('hidden', timeout=5000)
-    
-    error_text = page.locator('#errorMessage').text_content()
+    error_text = error_message.text_content()
     assert 'at least 2' in error_text.lower() or 'two' in error_text.lower()
 
 # ==============================================================================
