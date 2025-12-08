@@ -117,7 +117,6 @@ def test_read_calculation_positive(page: Page, fastapi_server: str):
     page.wait_for_timeout(500)
     
     # Click View button - use specific selector for the button in the table row
-    # The table has buttons with class "view-calc" that contain text "View"
     page.locator('table tbody tr').first.locator('.view-calc').click()
     
     # Verify modal appears with correct data
@@ -227,7 +226,14 @@ def test_create_calculation_empty_type_negative(page: Page, fastapi_server: str)
     
     # Try to submit without selecting type
     page.fill('input[name="inputs"]', '1, 2, 3')
-    page.click('button[type="submit"]')
+    
+    # Bypass HTML5 validation by triggering form submission via JavaScript
+    # This allows us to test the client-side validation logic
+    page.evaluate("""
+        const form = document.getElementById('calculationForm');
+        const event = new Event('submit', { cancelable: true });
+        form.dispatchEvent(event);
+    """)
     
     # Wait for error alert to appear and have content
     error_message = page.locator('#errorMessage')
@@ -254,7 +260,13 @@ def test_create_calculation_empty_inputs_negative(page: Page, fastapi_server: st
     
     # Select type but leave inputs empty
     page.select_option('select[name="type"]', 'addition')
-    page.click('button[type="submit"]')
+    
+    # Bypass HTML5 validation to test client-side validation
+    page.evaluate("""
+        const form = document.getElementById('calculationForm');
+        const event = new Event('submit', { cancelable: true });
+        form.dispatchEvent(event);
+    """)
     
     # Wait for error message to have content
     error_message = page.locator('#errorMessage')
@@ -278,6 +290,8 @@ def test_create_calculation_single_input_negative(page: Page, fastapi_server: st
     
     page.select_option('select[name="type"]', 'addition')
     page.fill('input[name="inputs"]', '42')
+    
+    # Click button to trigger client-side validation
     page.click('button[type="submit"]')
     
     # Wait for error message to have content
@@ -303,6 +317,8 @@ def test_create_calculation_non_numeric_inputs_negative(page: Page, fastapi_serv
     
     page.select_option('select[name="type"]', 'addition')
     page.fill('input[name="inputs"]', 'abc, def')
+    
+    # Click the button to trigger validation
     page.click('button[type="submit"]')
     
     # Wait for error message to have content
@@ -327,6 +343,8 @@ def test_create_calculation_division_by_zero_negative(page: Page, fastapi_server
     
     page.select_option('select[name="type"]', 'division')
     page.fill('input[name="inputs"]', '100, 0')
+    
+    # Click button to trigger validation
     page.click('button[type="submit"]')
     
     # Wait for error message to have content
