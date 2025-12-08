@@ -175,7 +175,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentCalculation = null;
 
     // Client-side validation functions
-    // Client-side validation functions
     function validateInputs(inputString) {
         if (!inputString || inputString.trim() === '') {
             return { valid: false, error: 'Inputs cannot be empty. Please enter at least 2 numbers.' };
@@ -204,14 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return { valid: true, numbers: parsedNumbers };
     }
-
-    function validateDivisionByZero(type, numbers) {
-        if (type === 'division' && numbers.slice(1).some(num => num === 0)) {
-            return { valid: false, error: 'Cannot divide by zero. Please change your divisor values.' };
-        }
-        return { valid: true };
-    }
-
     // Alert functions
     function showError(message) {
         const errorAlert = document.getElementById('errorAlert');
