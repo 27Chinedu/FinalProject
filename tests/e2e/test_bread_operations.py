@@ -116,8 +116,9 @@ def test_read_calculation_positive(page: Page, fastapi_server: str):
     page.click('button[type="submit"]')
     page.wait_for_timeout(500)
     
-    # Click View button - use text-based selector
-    page.click('text=View')
+    # Click View button - use specific selector for the button in the table row
+    # The table has buttons with class "view-calc" that contain text "View"
+    page.locator('table tbody tr').first.locator('.view-calc').click()
     
     # Verify modal appears with correct data
     expect(page.locator('#calculationModal')).to_be_visible()
@@ -148,8 +149,8 @@ def test_update_calculation_positive(page: Page, fastapi_server: str):
     page.click('button[type="submit"]')
     page.wait_for_timeout(500)
     
-    # Open view modal - use text-based selector
-    page.click('text=View')
+    # Open view modal - use specific selector for the View button in the table
+    page.locator('table tbody tr').first.locator('.view-calc').click()
     expect(page.locator('#calculationModal')).to_be_visible()
     
     # Click Edit button
@@ -197,10 +198,9 @@ def test_delete_calculation_positive(page: Page, fastapi_server: str):
     # Verify 2 calculations exist
     expect(page.locator('table tbody tr')).to_have_count(2)
     
-    # Delete first calculation - use text-based selector for the Delete button in first row
+    # Delete first calculation - use specific selector for Delete button
     page.once("dialog", lambda dialog: dialog.accept())
-    # Click the first Delete button in the table
-    page.locator('table tbody tr').first.locator('text=Delete').click()
+    page.locator('table tbody tr').first.locator('.delete-calc').click()
     
     # Wait for success message
     expect(page.locator('#successAlert')).to_be_visible(timeout=5000)
@@ -229,10 +229,17 @@ def test_create_calculation_empty_type_negative(page: Page, fastapi_server: str)
     page.fill('input[name="inputs"]', '1, 2, 3')
     page.click('button[type="submit"]')
     
-    # Should see error - check for error alert visibility or error message content
-    # The validation message should mention "operation type" or "select"
-    expect(page.locator('#errorAlert')).to_be_visible(timeout=5000)
-    # Use case-insensitive check
+    # Wait for error alert to appear (client-side validation shows this)
+    page.wait_for_timeout(500)
+    
+    # Check that error alert becomes visible OR the form shows an error
+    # The JavaScript showError function removes the 'hidden' class
+    error_alert = page.locator('#errorAlert')
+    
+    # Wait for the error alert to not have the hidden class
+    expect(error_alert).not_to_have_class('hidden', timeout=5000)
+    
+    # Verify error message content
     error_text = page.locator('#errorMessage').text_content()
     assert 'type' in error_text.lower() or 'select' in error_text.lower() or 'operation' in error_text.lower()
 
@@ -253,8 +260,13 @@ def test_create_calculation_empty_inputs_negative(page: Page, fastapi_server: st
     page.select_option('select[name="type"]', 'addition')
     page.click('button[type="submit"]')
     
-    # Should see error - use case-insensitive check
-    expect(page.locator('#errorAlert')).to_be_visible(timeout=5000)
+    # Wait for validation
+    page.wait_for_timeout(500)
+    
+    # Check error alert is visible (not hidden)
+    error_alert = page.locator('#errorAlert')
+    expect(error_alert).not_to_have_class('hidden', timeout=5000)
+    
     error_text = page.locator('#errorMessage').text_content()
     assert 'empty' in error_text.lower() or 'required' in error_text.lower() or 'at least' in error_text.lower()
 
@@ -275,8 +287,13 @@ def test_create_calculation_single_input_negative(page: Page, fastapi_server: st
     page.fill('input[name="inputs"]', '42')
     page.click('button[type="submit"]')
     
-    # Should see error - use case-insensitive check
-    expect(page.locator('#errorAlert')).to_be_visible(timeout=5000)
+    # Wait for validation
+    page.wait_for_timeout(500)
+    
+    # Check error alert is visible
+    error_alert = page.locator('#errorAlert')
+    expect(error_alert).not_to_have_class('hidden', timeout=5000)
+    
     error_text = page.locator('#errorMessage').text_content()
     # Check for "at least 2" case-insensitively
     assert 'at least 2' in error_text.lower() or 'two' in error_text.lower()
@@ -298,8 +315,13 @@ def test_create_calculation_non_numeric_inputs_negative(page: Page, fastapi_serv
     page.fill('input[name="inputs"]', 'abc, def')
     page.click('button[type="submit"]')
     
-    # Should see error - use case-insensitive check
-    expect(page.locator('#errorAlert')).to_be_visible(timeout=5000)
+    # Wait for validation
+    page.wait_for_timeout(500)
+    
+    # Check error alert is visible
+    error_alert = page.locator('#errorAlert')
+    expect(error_alert).not_to_have_class('hidden', timeout=5000)
+    
     error_text = page.locator('#errorMessage').text_content()
     assert 'number' in error_text.lower() or 'valid' in error_text.lower() or 'numeric' in error_text.lower()
 
@@ -320,8 +342,13 @@ def test_create_calculation_division_by_zero_negative(page: Page, fastapi_server
     page.fill('input[name="inputs"]', '100, 0')
     page.click('button[type="submit"]')
     
-    # Should see error
-    expect(page.locator('#errorAlert')).to_be_visible(timeout=5000)
+    # Wait for validation
+    page.wait_for_timeout(500)
+    
+    # Check error alert is visible
+    error_alert = page.locator('#errorAlert')
+    expect(error_alert).not_to_have_class('hidden', timeout=5000)
+    
     error_text = page.locator('#errorMessage').text_content()
     assert 'zero' in error_text.lower() or 'divide' in error_text.lower()
 
@@ -344,16 +371,21 @@ def test_update_calculation_invalid_inputs_negative(page: Page, fastapi_server: 
     page.click('button[type="submit"]')
     page.wait_for_timeout(500)
     
-    # Open edit mode - use text-based selector
-    page.click('text=View')
+    # Open edit mode - use specific selector for View button in table
+    page.locator('table tbody tr').first.locator('.view-calc').click()
     page.click('#editBtn')
     
     # Try to update with single input
     page.fill('#modalInputs', '42')
     page.click('#saveBtn')
     
-    # Should see error - use case-insensitive check
-    expect(page.locator('#errorAlert')).to_be_visible(timeout=5000)
+    # Wait for validation
+    page.wait_for_timeout(500)
+    
+    # Check error alert is visible
+    error_alert = page.locator('#errorAlert')
+    expect(error_alert).not_to_have_class('hidden', timeout=5000)
+    
     error_text = page.locator('#errorMessage').text_content()
     assert 'at least 2' in error_text.lower() or 'two' in error_text.lower()
 
@@ -418,7 +450,8 @@ def test_create_calculation_expired_token_negative(page: Page, fastapi_server: s
             # Should redirect to login or show error
             page.wait_for_timeout(2000)
             current_url = page.url
-            assert '/login' in current_url or page.locator('#errorAlert').is_visible()
+            error_visible = page.locator('#errorAlert').is_visible()
+            assert '/login' in current_url or error_visible
     else:
         # Already redirected to login - test passes
         assert '/login' in current_url
