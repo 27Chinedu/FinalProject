@@ -10,6 +10,7 @@ from app.core.config import settings
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 def get_current_user(
+        
     token: str = Depends(oauth2_scheme)
 ) -> UserResponse:
     """
@@ -27,7 +28,9 @@ def get_current_user(
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
         
         # Check if we have a full user payload with username
-        if "username" in payload:
+        # Note: The token must contain ALL these fields to use the full payload path
+        if all(key in payload for key in ["id", "username", "email", "first_name", "last_name", 
+                                          "is_active", "is_verified", "created_at", "updated_at"]):
             # Full payload - use all the fields
             return UserResponse(
                 id=UUID(payload["id"]),
@@ -61,7 +64,7 @@ def get_current_user(
         
     except (JWTError, ValueError, KeyError) as e:
         raise credentials_exception
-
+    
 def get_current_active_user(
     current_user: UserResponse = Depends(get_current_user)
 ) -> UserResponse:
