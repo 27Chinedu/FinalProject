@@ -6,6 +6,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.models.user import User, utcnow
 from datetime import datetime, timezone
+import time
+from faker import Faker
+
+fake = Faker()
 
 def test_user_init_with_hashed_password():
     """Test User initialization with hashed_password parameter"""
@@ -43,7 +47,12 @@ def test_user_update_method():
         last_name="Name",
         password="hashed"
     )
+    # Set initial updated_at
+    user.updated_at = utcnow()
     original_updated_at = user.updated_at
+    
+    # Small delay to ensure timestamp difference
+    time.sleep(0.01)
     
     result = user.update(first_name="New", last_name="Person")
     
@@ -68,8 +77,8 @@ def test_user_hashed_password_property():
 def test_user_register_short_password(db_session):
     """Test User.register with short password"""
     user_data = {
-        "username": "testuser",
-        "email": "test@example.com",
+        "username": fake.unique.user_name(),
+        "email": fake.unique.email(),
         "first_name": "Test",
         "last_name": "User",
         "password": "short"
@@ -80,8 +89,8 @@ def test_user_register_short_password(db_session):
 def test_user_register_no_password(db_session):
     """Test User.register with no password"""
     user_data = {
-        "username": "testuser",
-        "email": "test@example.com",
+        "username": fake.unique.user_name(),
+        "email": fake.unique.email(),
         "first_name": "Test",
         "last_name": "User",
         "password": None
@@ -91,9 +100,10 @@ def test_user_register_no_password(db_session):
 
 def test_user_register_duplicate_username(db_session):
     """Test User.register with duplicate username"""
+    username = fake.unique.user_name()
     user_data = {
-        "username": "duplicate",
-        "email": "first@example.com",
+        "username": username,
+        "email": fake.unique.email(),
         "first_name": "First",
         "last_name": "User",
         "password": "TestPass123!"
@@ -103,8 +113,8 @@ def test_user_register_duplicate_username(db_session):
     
     # Try to register with same username
     user_data2 = {
-        "username": "duplicate",
-        "email": "second@example.com",
+        "username": username,
+        "email": fake.unique.email(),
         "first_name": "Second",
         "last_name": "User",
         "password": "TestPass123!"
@@ -114,9 +124,10 @@ def test_user_register_duplicate_username(db_session):
 
 def test_user_register_duplicate_email(db_session):
     """Test User.register with duplicate email"""
+    email = fake.unique.email()
     user_data = {
-        "username": "first",
-        "email": "duplicate@example.com",
+        "username": fake.unique.user_name(),
+        "email": email,
         "first_name": "First",
         "last_name": "User",
         "password": "TestPass123!"
@@ -126,8 +137,8 @@ def test_user_register_duplicate_email(db_session):
     
     # Try to register with same email
     user_data2 = {
-        "username": "second",
-        "email": "duplicate@example.com",
+        "username": fake.unique.user_name(),
+        "email": email,
         "first_name": "Second",
         "last_name": "User",
         "password": "TestPass123!"
@@ -143,23 +154,23 @@ def test_user_authenticate_invalid_username(db_session):
 def test_user_authenticate_wrong_password(db_session):
     """Test User.authenticate with wrong password"""
     user_data = {
-        "username": "testuser",
-        "email": "test@example.com",
+        "username": fake.unique.user_name(),
+        "email": fake.unique.email(),
         "first_name": "Test",
         "last_name": "User",
         "password": "CorrectPass123!"
     }
-    User.register(db_session, user_data)
+    user = User.register(db_session, user_data)
     db_session.commit()
     
-    result = User.authenticate(db_session, "testuser", "WrongPass123!")
+    result = User.authenticate(db_session, user_data["username"], "WrongPass123!")
     assert result is None
 
 def test_user_authenticate_by_email(db_session):
     """Test User.authenticate using email"""
     user_data = {
-        "username": "testuser",
-        "email": "test@example.com",
+        "username": fake.unique.user_name(),
+        "email": fake.unique.email(),
         "first_name": "Test",
         "last_name": "User",
         "password": "TestPass123!"
@@ -167,7 +178,7 @@ def test_user_authenticate_by_email(db_session):
     User.register(db_session, user_data)
     db_session.commit()
     
-    result = User.authenticate(db_session, "test@example.com", "TestPass123!")
+    result = User.authenticate(db_session, user_data["email"], "TestPass123!")
     assert result is not None
     assert "access_token" in result
     assert "refresh_token" in result
@@ -175,8 +186,8 @@ def test_user_authenticate_by_email(db_session):
 def test_user_authenticate_updates_last_login(db_session):
     """Test that authenticate updates last_login"""
     user_data = {
-        "username": "testuser",
-        "email": "test@example.com",
+        "username": fake.unique.user_name(),
+        "email": fake.unique.email(),
         "first_name": "Test",
         "last_name": "User",
         "password": "TestPass123!"
@@ -186,7 +197,7 @@ def test_user_authenticate_updates_last_login(db_session):
     
     original_last_login = user.last_login
     
-    result = User.authenticate(db_session, "testuser", "TestPass123!")
+    result = User.authenticate(db_session, user_data["username"], "TestPass123!")
     db_session.commit()
     db_session.refresh(user)
     

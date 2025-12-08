@@ -15,6 +15,7 @@ def test_get_current_user_with_full_payload():
     
     user_id = uuid4()
     payload = {
+        "sub": str(user_id),
         "id": str(user_id),
         "username": "testuser",
         "email": "test@example.com",
