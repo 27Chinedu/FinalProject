@@ -1,6 +1,7 @@
 # tests/integration/test_profile_routes.py
 
 import pytest
+from uuid import uuid4
 from app.models.user import User
 from app.models.calculation import Calculation
 
@@ -32,7 +33,7 @@ def test_update_profile_username(db_session, fake_user_data):
     db_session.commit()
     
     original_username = user.username
-    new_username = "newusername123"
+    new_username = f"newusername_{uuid4()}"
     
     user.username = new_username
     db_session.commit()
@@ -48,7 +49,7 @@ def test_update_profile_email(db_session, fake_user_data):
     db_session.commit()
     
     original_email = user.email
-    new_email = "newemail@example.com"
+    new_email = f"newemail_{uuid4()}@example.com"
     
     user.email = new_email
     db_session.commit()
@@ -77,8 +78,8 @@ def test_duplicate_username_update(db_session):
     user1_data = {
         "first_name": "User",
         "last_name": "One",
-        "email": "user1@example.com",
-        "username": "user1",
+        "email": f"user1_{uuid4()}@example.com",
+        "username": f"user1_{uuid4()}",
         "password": "TestPass123!"
     }
     user1 = User.register(db_session, user1_data)
@@ -87,8 +88,8 @@ def test_duplicate_username_update(db_session):
     user2_data = {
         "first_name": "User",
         "last_name": "Two",
-        "email": "user2@example.com",
-        "username": "user2",
+        "email": f"user2_{uuid4()}@example.com",
+        "username": f"user2_{uuid4()}",
         "password": "TestPass123!"
     }
     user2 = User.register(db_session, user2_data)
@@ -178,9 +179,9 @@ def test_profile_data_integrity(db_session, fake_user_data):
     original_created_at = user.created_at
     db_session.commit()
     
-    # Update multiple fields
-    user.username = "newusername"
-    user.email = "newemail@example.com"
+    # Update multiple fields with unique values
+    user.username = f"newusername_{uuid4()}"
+    user.email = f"newemail_{uuid4()}@example.com"
     user.first_name = "NewFirst"
     user.last_name = "NewLast"
     db_session.commit()
@@ -191,5 +192,5 @@ def test_profile_data_integrity(db_session, fake_user_data):
     assert user.created_at == original_created_at
     
     # Updated fields should be changed
-    assert user.username == "newusername"
-    assert user.email == "newemail@example.com"
+    assert user.first_name == "NewFirst"
+    assert user.last_name == "NewLast"

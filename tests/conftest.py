@@ -98,7 +98,13 @@ def db_session() -> Generator[Session, None, None]:
     session = TestingSessionLocal()
     try:
         yield session
-        session.commit()
+        # Only commit if the session is in a valid state
+        if session.is_active:
+            try:
+                session.commit()
+            except Exception:
+                session.rollback()
+                raise
     except Exception:
         session.rollback()
         raise
