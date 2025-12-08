@@ -4,6 +4,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from app.schemas.user import UserResponse
 from app.models.user import User
+from jose import jwt, JWTError
+from app.core.config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
@@ -12,9 +14,7 @@ def get_current_user(
 ) -> UserResponse:
     """
     Dependency to get the current user from the JWT token without a database lookup.
-    This function supports two types of payloads:
-      - A full payload as a dict containing user info.
-      - A minimal payload, either as a dict with only a 'sub' key or directly as a UUID.
+    This function decodes the JWT token directly to extract user information.
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -22,49 +22,44 @@ def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    token_data = User.verify_token(token)
-    if token_data is None:
-        raise credentials_exception
-
     try:
-        # If the token data is a dictionary:
-        if isinstance(token_data, dict):
-            # If the payload contains a full set of user fields, use them directly.
-            if "username" in token_data:
-                return UserResponse(**token_data)
-            # Otherwise, assume it is a minimal payload with only the 'sub' key.
-            elif "sub" in token_data:
-                return UserResponse(
-                    id=token_data["sub"],
-                    username="unknown",
-                    email="unknown@example.com",
-                    first_name="Unknown",
-                    last_name="User",
-                    is_active=True,
-                    is_verified=False,
-                    created_at=datetime.utcnow(),
-                    updated_at=datetime.utcnow(),
-                )
-            else:
-                raise credentials_exception
-
-        # If the token data is directly a UUID (minimal payload):
-        elif isinstance(token_data, UUID):
+        # Decode the JWT token directly
+        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
+        
+        # Check if we have a full user payload with username
+        if "username" in payload:
+            # Full payload - use all the fields
             return UserResponse(
-                id=token_data,
-                username="unknown",
-                email="unknown@example.com",
-                first_name="Unknown",
-                last_name="User",
-                is_active=True,
-                is_verified=False,
-                created_at=datetime.utcnow(),
-                updated_at=datetime.utcnow(),
+                id=UUID(payload["id"]),
+                username=payload["username"],
+                email=payload["email"],
+                first_name=payload["first_name"],
+                last_name=payload["last_name"],
+                is_active=payload["is_active"],
+                is_verified=payload["is_verified"],
+                created_at=datetime.fromisoformat(payload["created_at"]),
+                updated_at=datetime.fromisoformat(payload["updated_at"])
             )
-        else:
+        
+        # Minimal payload - only has 'sub' field
+        sub = payload.get("sub")
+        if sub is None:
             raise credentials_exception
-
-    except Exception:
+        
+        # Create a minimal UserResponse with just the ID
+        return UserResponse(
+            id=UUID(sub),
+            username="unknown",
+            email="unknown@example.com",
+            first_name="Unknown",
+            last_name="User",
+            is_active=True,
+            is_verified=False,
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+        )
+        
+    except (JWTError, ValueError, KeyError) as e:
         raise credentials_exception
 
 def get_current_active_user(
