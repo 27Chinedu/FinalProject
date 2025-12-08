@@ -175,9 +175,12 @@ def test_profile_data_integrity(db_session, fake_user_data):
     """Test that profile data maintains integrity after updates"""
     fake_user_data['password'] = "TestPass123!"
     user = User.register(db_session, fake_user_data)
+    db_session.commit()
+    db_session.refresh(user)
+    
+    # Capture original values AFTER commit so ID is assigned
     original_id = user.id
     original_created_at = user.created_at
-    db_session.commit()
     
     # Update multiple fields with unique values
     user.username = f"newusername_{uuid4()}"
