@@ -10,7 +10,7 @@ services:
       PYTHONUNBUFFERED: 1
       DATABASE_URL: postgresql://postgres:postgres@db:5432/fastapi_db
       TEST_DATABASE_URL: postgresql://postgres:postgres@db:5432/fastapi_test_db
-      JWT_SECRET_KEY: "super-secret-key-for-jwt-min-32-chars"
+      JWT_SECRET_KEY: "super-sefcret-key-for-jwt-min-32-chars"
       JWT_REFRESH_SECRET_KEY: "super-refresh-secret-key-min-32-chars"
       ACCESS_TOKEN_EXPIRE_MINUTES: 30
       REFRESH_TOKEN_EXPIRE_DAYS: 7
@@ -18,8 +18,7 @@ services:
     command: >
       sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     networks:
       - app-network
 
@@ -33,7 +32,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d fastapi_db"]
       interval: 10s
