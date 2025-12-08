@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Client-side validation functions
     function validateInputs(inputString) {
         if (!inputString || inputString.trim() === '') {
-            return { valid: false, error: 'Inputs cannot be empty' };
+            return { valid: false, error: 'Inputs cannot be empty. Please enter at least 2 numbers.' };
         }
 
         const numbers = inputString.split(',')
@@ -185,13 +185,13 @@ document.addEventListener('DOMContentLoaded', function() {
             .filter(num => num !== '');
 
         if (numbers.length < 2) {
-            return { valid: false, error: 'At least 2 numbers are required' };
+            return { valid: false, error: 'At least 2 numbers are required for calculation.' };
         }
 
         const parsedNumbers = numbers.map(num => parseFloat(num));
         
         if (parsedNumbers.some(num => isNaN(num))) {
-            return { valid: false, error: 'All inputs must be valid numbers' };
+            return { valid: false, error: 'All inputs must be valid numbers. Please check your input.' };
         }
 
         return { valid: true, numbers: parsedNumbers };
@@ -199,15 +199,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function validateCalculationType(type) {
         const validTypes = ['addition', 'subtraction', 'multiplication', 'division'];
-        if (!type || !validTypes.includes(type)) {
-            return { valid: false, error: 'Please select a valid operation type' };
+        if (!type || type === '' || !validTypes.includes(type)) {
+            return { valid: false, error: 'Please select a valid operation type from the dropdown.' };
         }
         return { valid: true };
     }
 
     function validateDivisionByZero(type, numbers) {
         if (type === 'division' && numbers.slice(1).some(num => num === 0)) {
-            return { valid: false, error: 'Cannot divide by zero' };
+            return { valid: false, error: 'Cannot divide by zero. Please change your divisor values.' };
         }
         return { valid: true };
     }
@@ -216,16 +216,36 @@ document.addEventListener('DOMContentLoaded', function() {
     function showError(message) {
         const errorAlert = document.getElementById('errorAlert');
         const errorMessage = document.getElementById('errorMessage');
-        errorMessage.textContent = message;
+        const successAlert = document.getElementById('successAlert');
+        
+        // Hide success alert if visible
+        successAlert.classList.add('hidden');
+        
+        // Set message text BEFORE showing the alert
+        errorMessage.textContent = message || 'An error occurred';
+        
+        // Show the error alert by removing hidden class
         errorAlert.classList.remove('hidden');
+        
+        // Auto-hide after 5 seconds
         setTimeout(() => errorAlert.classList.add('hidden'), 5000);
     }
 
     function showSuccess(message) {
         const successAlert = document.getElementById('successAlert');
         const successMessage = document.getElementById('successMessage');
-        successMessage.textContent = message;
+        const errorAlert = document.getElementById('errorAlert');
+        
+        // Hide error alert if visible
+        errorAlert.classList.add('hidden');
+        
+        // Set message text BEFORE showing the alert
+        successMessage.textContent = message || 'Operation successful';
+        
+        // Show the success alert
         successAlert.classList.remove('hidden');
+        
+        // Auto-hide after 5 seconds
         setTimeout(() => successAlert.classList.add('hidden'), 5000);
     }
 
@@ -411,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const type = document.getElementById('calcType').value;
         const inputsValue = document.getElementById('calcInputs').value;
 
-        // Validate type
+        // Validate type first
         const typeValidation = validateCalculationType(type);
         if (!typeValidation.valid) {
             showError(typeValidation.error);
