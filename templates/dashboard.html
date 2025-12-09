@@ -188,6 +188,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return { valid: false, error: 'At least 2 numbers are required for calculation.' };
         }
 
+        // Check each number string before parsing
+        for (let i = 0; i < numbers.length; i++) {
+            // Check if it's a valid number format (allows negatives, decimals)
+            if (!/^-?\d*\.?\d+$/.test(numbers[i])) {
+                return { valid: false, error: 'All inputs must be valid numbers. Please check your input.' };
+            }
+        }
+
         const parsedNumbers = numbers.map(num => parseFloat(num));
         
         if (parsedNumbers.some(num => isNaN(num))) {
