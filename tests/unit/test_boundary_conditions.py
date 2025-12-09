@@ -143,7 +143,9 @@ class TestStringBoundaries:
         assert user.last_name == "B"
 
     def test_long_names(self, db_session):
-        """Test very long names"""
+        """Test very long names - should fail with database constraint"""
+        from sqlalchemy.exc import DataError
+
         long_name = "A" * 100
 
         user_data = {
@@ -155,9 +157,30 @@ class TestStringBoundaries:
         }
 
         user = User.register(db_session, user_data)
+
+        # Should fail due to VARCHAR(50) constraint
+        with pytest.raises(DataError):
+            db_session.commit()
+
+        db_session.rollback()
+
+    def test_maximum_length_names(self, db_session):
+        """Test names at maximum allowed length (50 chars)"""
+        max_length_name = "A" * 50
+
+        user_data = {
+            "first_name": max_length_name,
+            "last_name": max_length_name,
+            "email": f"test_{uuid4()}@example.com",
+            "username": f"user_{uuid4()}",
+            "password": "TestPass123!"
+        }
+
+        user = User.register(db_session, user_data)
         db_session.commit()
 
-        assert len(user.first_name) >= 50  # Should store or truncate
+        assert len(user.first_name) == 50
+        assert len(user.last_name) == 50
 
     def test_special_characters_in_name(self, db_session):
         """Test special characters in names"""

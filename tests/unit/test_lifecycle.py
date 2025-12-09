@@ -338,6 +338,6 @@ class TestModelBaseClasses:
         from app.database import Base
 
         assert issubclass(User, Base)
-        # Calculation uses AbstractCalculation, but it should still work
-        from app.models.calculation import AbstractCalculation
-        assert issubclass(AbstractCalculation, Base)
+        # Calculation inherits from Base (AbstractCalculation is a mixin)
+        from app.models.calculation import Calculation
+        assert issubclass(Calculation, Base)

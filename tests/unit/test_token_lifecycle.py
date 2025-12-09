@@ -2,7 +2,7 @@
 
 import pytest
 from datetime import datetime, timedelta, timezone
-from uuid import uuid4
+from uuid import uuid4, UUID
 from jose import jwt, JWTError
 from app.auth.jwt import create_token, verify_password, get_password_hash
 from app.core.config import settings

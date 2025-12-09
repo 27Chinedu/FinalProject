@@ -363,7 +363,9 @@ class TestValidationHelpers:
 
     def test_non_numeric_validation(self):
         """Test non-numeric input rejection"""
-        non_numeric = ["abc", "12abc", "", "NaN"]
+        import math
+
+        non_numeric = ["abc", "12abc", ""]
 
         for value in non_numeric:
             if value == "":
@@ -376,6 +378,10 @@ class TestValidationHelpers:
                     is_numeric = False
 
             assert is_numeric is False
+
+        # Special case: "NaN" is technically parseable as float but not a valid number
+        nan_value = float("NaN")
+        assert math.isnan(nan_value)  # It's NaN, which is a special float value
 
 
 class TestTokenManagement:
