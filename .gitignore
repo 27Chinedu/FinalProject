@@ -1,2 +1,23 @@
 venv
 __pycache__/
+
+# Testing and coverage
+.coverage
+htmlcov/
+.pytest_cache/
+*.py[cod]
+*$py.class
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
