@@ -188,13 +188,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return { valid: false, error: 'At least 2 numbers are required for calculation.' };
         }
 
-        // First check if any input is non-numeric before parsing
-        for (let i = 0; i < numbers.length; i++) {
-            if (numbers[i] === '' || isNaN(Number(numbers[i]))) {
-                return { valid: false, error: 'All inputs must be valid numbers. Please check your input.' };
-            }
-        }
-
         const parsedNumbers = numbers.map(num => parseFloat(num));
         
         if (parsedNumbers.some(num => isNaN(num))) {
@@ -203,6 +196,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return { valid: true, numbers: parsedNumbers };
     }
+
+    function validateCalculationType(type) {
+        const validTypes = ['addition', 'subtraction', 'multiplication', 'division'];
+        if (!type || type === '' || !validTypes.includes(type)) {
+            return { valid: false, error: 'Please select a valid operation type from the dropdown.' };
+        }
+        return { valid: true };
+    }
+
+    function validateDivisionByZero(type, numbers) {
+        if (type === 'division' && numbers.slice(1).some(num => num === 0)) {
+            return { valid: false, error: 'Cannot divide by zero. Please change your divisor values.' };
+        }
+        return { valid: true };
+    }
+
     // Alert functions
     function showError(message) {
         const errorAlert = document.getElementById('errorAlert');
