@@ -151,8 +151,8 @@ This application demonstrates modern web development practices with:
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd <repository-name>
+git clone 
+cd 
 ```
 
 2. Create and activate a virtual environment:
@@ -521,21 +521,22 @@ For production deployment, consider:
 │   └── register.html               # Registration page
 ├── tests/
 │   ├── e2e/
-│   │   ├── test_edge_cases.py      # Edge case E2E tests
+│   │   ├── test_bread_operations.py    # BREAD operations E2E tests
+│   │   ├── test_edge_cases.py          # Edge case E2E tests
 │   │   ├── test_fastapi_calculator.py  # Main E2E tests
-│   │   └── test_profile_e2e.py     # Profile E2E tests
+│   │   └── test_profile_e2e.py         # Profile E2E tests
 │   ├── integration/
-│   │   ├── test_main_routes.py     # Route integration tests
-│   │   └── test_profile_routes.py  # Profile integration tests
+│   │   ├── test_main_routes.py         # Route integration tests
+│   │   └── test_profile_routes.py      # Profile integration tests
 │   ├── unit/
 │   │   ├── test_auth_dependencies.py   # Auth dependency tests
 │   │   ├── test_calculation_models.py  # Calculation model tests
 │   │   ├── test_config_and_database.py # Config tests
-│   │   ├── test_jwt.py             # JWT and password tests
-│   │   ├── test_profile_logic.py   # Profile schema tests
-│   │   ├── test_redis.py           # Redis stub tests
-│   │   ├── test_schemas.py         # Schema validation tests
-│   │   └── test_user_model.py      # User model tests
+│   │   ├── test_jwt.py                 # JWT and password tests
+│   │   ├── test_profile_logic.py       # Profile schema tests
+│   │   ├── test_redis.py               # Redis stub tests
+│   │   ├── test_schemas.py             # Schema validation tests
+│   │   └── test_user_model.py          # User model tests
 │   └── conftest.py                 # Pytest fixtures and config
 ├── .env.example                    # Environment variable template
 ├── .gitignore                      # Git ignore rules
