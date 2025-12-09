@@ -61,7 +61,6 @@
                         <label for="calcInputs" class="block text-sm font-medium text-gray-700 mb-1">Numbers (comma-separated) *</label>
                         <input type="text" id="calcInputs" name="inputs" 
                                placeholder="e.g., 5, 10, 15" required
-                               pattern="^(\s*-?\d+\.?\d*\s*,\s*)*\s*-?\d+\.?\d*\s*$"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <p class="mt-1 text-xs text-gray-500">Enter at least 2 numbers separated by commas</p>
                     </div>
@@ -99,7 +98,6 @@
                             <label for="modalInputs" class="block text-sm font-medium text-gray-700 mb-1">Edit Inputs *</label>
                             <input type="text" id="modalInputs" 
                                    placeholder="e.g., 5, 10, 15"
-                                   pattern="^(\s*-?\d+\.?\d*\s*,\s*)*\s*-?\d+\.?\d*\s*$"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <p class="mt-1 text-xs text-gray-500">Enter at least 2 numbers</p>
                         </div>
@@ -188,20 +186,22 @@ document.addEventListener('DOMContentLoaded', function() {
             return { valid: false, error: 'At least 2 numbers are required for calculation.' };
         }
 
-        // Check each number string before parsing
+        // Check each number string - this will catch "abc", "def", etc.
         for (let i = 0; i < numbers.length; i++) {
-            // Check if it's a valid number format (allows negatives, decimals)
+            // Regex: optional minus, then digits with optional decimal point
+            // This will NOT match letters, only numbers
             if (!/^-?\d*\.?\d+$/.test(numbers[i])) {
+                return { valid: false, error: 'All inputs must be valid numbers. Please check your input.' };
+            }
+            
+            // Double-check by parsing
+            const parsed = parseFloat(numbers[i]);
+            if (isNaN(parsed)) {
                 return { valid: false, error: 'All inputs must be valid numbers. Please check your input.' };
             }
         }
 
         const parsedNumbers = numbers.map(num => parseFloat(num));
-        
-        if (parsedNumbers.some(num => isNaN(num))) {
-            return { valid: false, error: 'All inputs must be valid numbers. Please check your input.' };
-        }
-
         return { valid: true, numbers: parsedNumbers };
     }
 
@@ -432,9 +432,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Create calculation
+    // Create calculation - IMPORTANT: Prevent default and validate manually
     document.getElementById('calculationForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+        e.preventDefault();  // Always prevent default first
         
         const type = document.getElementById('calcType').value;
         const inputsValue = document.getElementById('calcInputs').value;
@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Validate inputs
+        // Validate inputs - this will catch non-numeric values like "abc, def"
         const inputValidation = validateInputs(inputsValue);
         if (!inputValidation.valid) {
             showError(inputValidation.error);
