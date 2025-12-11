@@ -520,7 +520,7 @@ def test_profile_update_all_fields(base_url: str):
         "last_name": "NewLast"
     }
 
-    response = requests.put(f"{base_url}/profile", json=update_data, headers=headers)
+    response = requests.put(f"{base_url}/profile/me", json=update_data, headers=headers)
     assert response.status_code == 200
     data = response.json()
     assert data["username"] == new_username
@@ -533,7 +533,7 @@ def test_profile_update_no_fields(base_url: str):
     token_data = register_and_login(base_url)
     headers = {"Authorization": f"Bearer {token_data['access_token']}"}
 
-    response = requests.put(f"{base_url}/profile", json={}, headers=headers)
+    response = requests.put(f"{base_url}/profile/me", json={}, headers=headers)
     assert response.status_code == 422
     assert "at least one field" in response.text.lower()
 
@@ -549,7 +549,7 @@ def test_password_change_same_password(base_url: str):
         "confirm_new_password": "OldPass123!"
     }
 
-    response = requests.put(f"{base_url}/profile/password", json=password_data, headers=headers)
+    response = requests.post(f"{base_url}/profile/change-password", json=password_data, headers=headers)
     assert response.status_code == 422
     assert "different" in response.text.lower()
 
@@ -565,7 +565,7 @@ def test_password_change_mismatch(base_url: str):
         "confirm_new_password": "Different123!"
     }
 
-    response = requests.put(f"{base_url}/profile/password", json=password_data, headers=headers)
+    response = requests.post(f"{base_url}/profile/change-password", json=password_data, headers=headers)
     assert response.status_code == 422
     assert "match" in response.text.lower()
 
@@ -590,7 +590,7 @@ def test_password_change_weak_password(base_url: str):
             "confirm_new_password": confirm_pass
         }
 
-        response = requests.put(f"{base_url}/profile/password", json=password_data, headers=headers)
+        response = requests.post(f"{base_url}/profile/change-password", json=password_data, headers=headers)
         assert response.status_code == 422, f"Failed for {new_pass}"
         assert expected_error_keyword in response.text.lower(), f"Expected '{expected_error_keyword}' in error for {new_pass}"
 
@@ -609,7 +609,7 @@ def test_get_profile_with_calculations(base_url: str):
         )
 
     # Get profile
-    response = requests.get(f"{base_url}/profile", headers=headers)
+    response = requests.get(f"{base_url}/profile/me", headers=headers)
     assert response.status_code == 200
     data = response.json()
     assert "calculation_count" in data
