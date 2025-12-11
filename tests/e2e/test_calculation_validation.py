@@ -8,8 +8,8 @@ import requests
 
 def register_and_login(fastapi_server: str, user_data: dict) -> dict:
     """Helper function to register and login a user"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
-    login_url = f"{fastapi_server.rstrip("/")}/auth/login"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
+    login_url = f'{fastapi_server.rstrip("/")}/auth/login'
 
     reg_response = requests.post(reg_url, json=user_data)
     assert reg_response.status_code == 201
@@ -46,7 +46,7 @@ def test_calculation_type_case_insensitive(fastapi_server: str):
         "inputs": [1, 2, 3]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
     assert response.json()["type"] == "addition"
 
@@ -69,7 +69,7 @@ def test_calculation_type_mixed_case(fastapi_server: str):
         "inputs": [2, 3]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
     assert response.json()["type"] == "multiplication"
 
@@ -92,7 +92,7 @@ def test_calculation_invalid_type_string(fastapi_server: str):
         "inputs": [2, 3]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 def test_calculation_type_integer(fastapi_server: str):
@@ -114,7 +114,7 @@ def test_calculation_type_integer(fastapi_server: str):
         "inputs": [1, 2]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 def test_calculation_missing_type(fastapi_server: str):
@@ -136,7 +136,7 @@ def test_calculation_missing_type(fastapi_server: str):
         "inputs": [1, 2, 3]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 # ============================================================================
@@ -162,7 +162,7 @@ def test_calculation_inputs_not_list(fastapi_server: str):
         "inputs": "1,2,3"  # String instead of list
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 def test_calculation_inputs_single_value(fastapi_server: str):
@@ -184,7 +184,7 @@ def test_calculation_inputs_single_value(fastapi_server: str):
         "inputs": [42]  # Only one input
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 def test_calculation_inputs_empty_list(fastapi_server: str):
@@ -206,7 +206,7 @@ def test_calculation_inputs_empty_list(fastapi_server: str):
         "inputs": []
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 def test_calculation_missing_inputs(fastapi_server: str):
@@ -228,7 +228,7 @@ def test_calculation_missing_inputs(fastapi_server: str):
         # Missing inputs field
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 def test_calculation_inputs_with_strings(fastapi_server: str):
@@ -250,7 +250,7 @@ def test_calculation_inputs_with_strings(fastapi_server: str):
         "inputs": [1, "two", 3]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 def test_calculation_inputs_with_null(fastapi_server: str):
@@ -272,7 +272,7 @@ def test_calculation_inputs_with_null(fastapi_server: str):
         "inputs": [1, None, 3]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 # ============================================================================
@@ -298,7 +298,7 @@ def test_division_by_zero_second_input(fastapi_server: str):
         "inputs": [100, 0]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 def test_division_by_zero_third_input(fastapi_server: str):
@@ -320,7 +320,7 @@ def test_division_by_zero_third_input(fastapi_server: str):
         "inputs": [100, 5, 0]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 def test_division_first_input_zero_allowed(fastapi_server: str):
@@ -342,7 +342,7 @@ def test_division_first_input_zero_allowed(fastapi_server: str):
         "inputs": [0, 5]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
     assert response.json()["result"] == 0
 
@@ -365,7 +365,7 @@ def test_division_negative_zero(fastapi_server: str):
         "inputs": [100, -0.0]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     # Should fail because -0.0 == 0
     assert response.status_code == 422
 
@@ -392,12 +392,12 @@ def test_update_calculation_single_input(fastapi_server: str):
         "type": "addition",
         "inputs": [1, 2, 3]
     }
-    create_response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    create_response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     calc_id = create_response.json()["id"]
 
     # Try to update with single input
     update_data = {"inputs": [42]}
-    response = requests.put(f"{fastapi_server.rstrip("/")}/calculations/{calc_id}", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/calculations/{calc_id}', json=update_data, headers=headers)
     assert response.status_code == 422
 
 def test_update_calculation_empty_inputs(fastapi_server: str):
@@ -419,12 +419,12 @@ def test_update_calculation_empty_inputs(fastapi_server: str):
         "type": "addition",
         "inputs": [1, 2, 3]
     }
-    create_response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    create_response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     calc_id = create_response.json()["id"]
 
     # Try to update with empty inputs
     update_data = {"inputs": []}
-    response = requests.put(f"{fastapi_server.rstrip("/")}/calculations/{calc_id}", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/calculations/{calc_id}', json=update_data, headers=headers)
     assert response.status_code == 422
 
 def test_update_calculation_valid_inputs(fastapi_server: str):
@@ -446,12 +446,12 @@ def test_update_calculation_valid_inputs(fastapi_server: str):
         "type": "multiplication",
         "inputs": [2, 3]
     }
-    create_response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    create_response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     calc_id = create_response.json()["id"]
 
     # Update with valid inputs
     update_data = {"inputs": [5, 6]}
-    response = requests.put(f"{fastapi_server.rstrip("/")}/calculations/{calc_id}", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/calculations/{calc_id}', json=update_data, headers=headers)
     assert response.status_code == 200
     assert response.json()["result"] == 30
 
@@ -474,13 +474,13 @@ def test_update_calculation_null_inputs(fastapi_server: str):
         "type": "addition",
         "inputs": [1, 2, 3]
     }
-    create_response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    create_response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     calc_id = create_response.json()["id"]
     original_result = create_response.json()["result"]
 
     # Update with null inputs (should preserve original)
     update_data = {"inputs": None}
-    response = requests.put(f"{fastapi_server.rstrip("/")}/calculations/{calc_id}", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/calculations/{calc_id}', json=update_data, headers=headers)
     assert response.status_code == 200
     # Result should remain unchanged
     assert response.json()["result"] == original_result
@@ -508,7 +508,7 @@ def test_addition_multiple_inputs(fastapi_server: str):
         "inputs": [1, 2, 3, 4, 5]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
     assert response.json()["result"] == 15
 
@@ -531,7 +531,7 @@ def test_subtraction_multiple_inputs(fastapi_server: str):
         "inputs": [100, 10, 5, 2]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
     # 100 - 10 - 5 - 2 = 83
     assert response.json()["result"] == 83
@@ -555,7 +555,7 @@ def test_multiplication_with_zero(fastapi_server: str):
         "inputs": [5, 0, 10]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
     assert response.json()["result"] == 0
 
@@ -578,7 +578,7 @@ def test_division_with_decimals(fastapi_server: str):
         "inputs": [10, 3]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
     result = response.json()["result"]
     # 10 / 3 = 3.333...
@@ -603,7 +603,7 @@ def test_calculation_with_negative_numbers(fastapi_server: str):
         "type": "addition",
         "inputs": [-5, 10, -3]
     }
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
     assert response.json()["result"] == 2
 
@@ -626,7 +626,7 @@ def test_calculation_with_large_numbers(fastapi_server: str):
         "inputs": [1000000, 1000000]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
     assert response.json()["result"] == 1000000000000
 
@@ -649,7 +649,7 @@ def test_calculation_with_very_small_decimals(fastapi_server: str):
         "inputs": [0.0001, 0.0002]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
     result = response.json()["result"]
     assert abs(result - 0.0003) < 0.000001
@@ -677,7 +677,7 @@ def test_calculation_response_has_all_fields(fastapi_server: str):
         "inputs": [1, 2]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
 
     data = response.json()
@@ -706,7 +706,7 @@ def test_calculation_timestamps(fastapi_server: str):
         "inputs": [1, 2]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 201
 
     data = response.json()
@@ -739,7 +739,7 @@ def test_update_calculation_changes_updated_at(fastapi_server: str):
         "type": "addition",
         "inputs": [1, 2]
     }
-    create_response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    create_response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     calc_id = create_response.json()["id"]
     original_updated_at = create_response.json()["updated_at"]
 
@@ -749,7 +749,7 @@ def test_update_calculation_changes_updated_at(fastapi_server: str):
 
     # Update calculation
     update_data = {"inputs": [3, 4]}
-    update_response = requests.put(f"{fastapi_server.rstrip("/")}/calculations/{calc_id}", json=update_data, headers=headers)
+    update_response = requests.put(f'{fastapi_server.rstrip("/")}/calculations/{calc_id}', json=update_data, headers=headers)
     new_updated_at = update_response.json()["updated_at"]
 
     # Timestamp should be different

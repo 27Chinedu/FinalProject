@@ -8,8 +8,8 @@ import requests
 
 def register_and_login(fastapi_server: str, user_data: dict) -> dict:
     """Helper function to register and login a user"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
-    login_url = f"{fastapi_server.rstrip("/")}/auth/login"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
+    login_url = f'{fastapi_server.rstrip("/")}/auth/login'
 
     reg_response = requests.post(reg_url, json=user_data)
     assert reg_response.status_code == 201
@@ -43,7 +43,7 @@ def test_update_profile_username_too_short(fastapi_server: str):
     # Try to update with too short username
     update_data = {"username": "ab"}  # Only 2 characters
 
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
     assert response.status_code == 422
 
 def test_update_profile_username_too_long(fastapi_server: str):
@@ -63,7 +63,7 @@ def test_update_profile_username_too_long(fastapi_server: str):
     # Try to update with too long username (> 50 chars)
     update_data = {"username": "a" * 51}
 
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
     assert response.status_code == 422
 
 def test_update_profile_first_name_empty(fastapi_server: str):
@@ -83,7 +83,7 @@ def test_update_profile_first_name_empty(fastapi_server: str):
     # Try to update with empty first name
     update_data = {"first_name": ""}
 
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
     assert response.status_code == 422
 
 def test_update_profile_last_name_empty(fastapi_server: str):
@@ -103,7 +103,7 @@ def test_update_profile_last_name_empty(fastapi_server: str):
     # Try to update with empty last name
     update_data = {"last_name": ""}
 
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
     assert response.status_code == 422
 
 def test_update_profile_first_name_too_long(fastapi_server: str):
@@ -123,7 +123,7 @@ def test_update_profile_first_name_too_long(fastapi_server: str):
     # Try to update with too long first name (> 50 chars)
     update_data = {"first_name": "A" * 51}
 
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
     assert response.status_code == 422
 
 def test_update_profile_last_name_too_long(fastapi_server: str):
@@ -143,7 +143,7 @@ def test_update_profile_last_name_too_long(fastapi_server: str):
     # Try to update with too long last name (> 50 chars)
     update_data = {"last_name": "B" * 51}
 
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
     assert response.status_code == 422
 
 def test_update_profile_only_first_name(fastapi_server: str):
@@ -163,7 +163,7 @@ def test_update_profile_only_first_name(fastapi_server: str):
     # Update only first name
     update_data = {"first_name": "New"}
 
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
     assert response.status_code == 200
 
     updated_profile = response.json()
@@ -187,7 +187,7 @@ def test_update_profile_only_last_name(fastapi_server: str):
     # Update only last name
     update_data = {"last_name": "New"}
 
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
     assert response.status_code == 200
 
     updated_profile = response.json()
@@ -212,7 +212,7 @@ def test_update_profile_only_email(fastapi_server: str):
     new_email = f"newemail{uuid4()}@example.com"
     update_data = {"email": new_email}
 
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
     assert response.status_code == 200
 
     updated_profile = response.json()
@@ -243,7 +243,7 @@ def test_change_password_new_same_as_current(fastapi_server: str):
         "confirm_new_password": "TestPass123!"
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/profile/change-password", json=password_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/profile/change-password', json=password_data, headers=headers)
     # This might be 422 (validation) or could be allowed depending on implementation
     assert response.status_code in [422, 400]
 
@@ -268,7 +268,7 @@ def test_change_password_new_too_short(fastapi_server: str):
         "confirm_new_password": "Short1!"
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/profile/change-password", json=password_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/profile/change-password', json=password_data, headers=headers)
     assert response.status_code == 422
 
 def test_change_password_new_no_uppercase(fastapi_server: str):
@@ -292,7 +292,7 @@ def test_change_password_new_no_uppercase(fastapi_server: str):
         "confirm_new_password": "newpass123!"
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/profile/change-password", json=password_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/profile/change-password', json=password_data, headers=headers)
     assert response.status_code == 422
 
 def test_change_password_new_no_lowercase(fastapi_server: str):
@@ -316,7 +316,7 @@ def test_change_password_new_no_lowercase(fastapi_server: str):
         "confirm_new_password": "NEWPASS123!"
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/profile/change-password", json=password_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/profile/change-password', json=password_data, headers=headers)
     assert response.status_code == 422
 
 def test_change_password_new_no_digit(fastapi_server: str):
@@ -340,7 +340,7 @@ def test_change_password_new_no_digit(fastapi_server: str):
         "confirm_new_password": "NewPassword!"
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/profile/change-password", json=password_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/profile/change-password', json=password_data, headers=headers)
     assert response.status_code == 422
 
 def test_change_password_new_no_special(fastapi_server: str):
@@ -364,7 +364,7 @@ def test_change_password_new_no_special(fastapi_server: str):
         "confirm_new_password": "NewPassword123"
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/profile/change-password", json=password_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/profile/change-password', json=password_data, headers=headers)
     assert response.status_code == 422
 
 def test_change_password_without_auth(fastapi_server: str):
@@ -375,19 +375,19 @@ def test_change_password_without_auth(fastapi_server: str):
         "confirm_new_password": "NewPass456!"
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/profile/change-password", json=password_data)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/profile/change-password', json=password_data)
     assert response.status_code == 401
 
 def test_get_profile_without_auth(fastapi_server: str):
     """Test getting profile without authentication fails"""
-    response = requests.get(f"{fastapi_server.rstrip("/")}/profile/me")
+    response = requests.get(f'{fastapi_server.rstrip("/")}/profile/me')
     assert response.status_code == 401
 
 def test_update_profile_without_auth(fastapi_server: str):
     """Test updating profile without authentication fails"""
     update_data = {"first_name": "New"}
 
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data)
     assert response.status_code == 401
 
 # ============================================================================
@@ -409,7 +409,7 @@ def test_profile_response_has_calculation_count(fastapi_server: str):
     headers = {"Authorization": f"Bearer {token_data['access_token']}"}
 
     # Get profile
-    response = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=headers)
+    response = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers)
     assert response.status_code == 200
 
     profile = response.json()
@@ -432,7 +432,7 @@ def test_profile_response_structure(fastapi_server: str):
     headers = {"Authorization": f"Bearer {token_data['access_token']}"}
 
     # Get profile
-    response = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=headers)
+    response = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers)
     assert response.status_code == 200
 
     profile = response.json()
@@ -458,7 +458,7 @@ def test_profile_calculation_count_accuracy(fastapi_server: str):
     headers = {"Authorization": f"Bearer {token_data['access_token']}"}
 
     # Initial count should be 0
-    profile = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=headers).json()
+    profile = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers).json()
     assert profile["calculation_count"] == 0
 
     # Create 3 calculations
@@ -467,19 +467,19 @@ def test_profile_calculation_count_accuracy(fastapi_server: str):
             "type": "addition",
             "inputs": [i, i+1]
         }
-        requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+        requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
 
     # Check count is now 3
-    profile = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=headers).json()
+    profile = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers).json()
     assert profile["calculation_count"] == 3
 
     # Delete one calculation
-    calcs = requests.get(f"{fastapi_server.rstrip("/")}/calculations", headers=headers).json()
+    calcs = requests.get(f'{fastapi_server.rstrip("/")}/calculations', headers=headers).json()
     if calcs:
-        requests.delete(f"{fastapi_server.rstrip("/")}/calculations/{calcs[0]['id']}", headers=headers)
+        requests.delete(f'{fastapi_server.rstrip("/")}/calculations/{calcs[0]['id']}', headers=headers)
 
     # Check count is now 2
-    profile = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=headers).json()
+    profile = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers).json()
     assert profile["calculation_count"] == 2
 
 # ============================================================================
@@ -501,14 +501,14 @@ def test_update_profile_preserves_other_fields(fastapi_server: str):
     headers = {"Authorization": f"Bearer {token_data['access_token']}"}
 
     # Get original profile
-    original = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=headers).json()
+    original = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers).json()
 
     # Update only first name
     update_data = {"first_name": "NewFirst"}
-    requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
 
     # Get updated profile
-    updated = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=headers).json()
+    updated = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers).json()
 
     # Check other fields unchanged
     assert updated["first_name"] == "NewFirst"
@@ -533,7 +533,7 @@ def test_update_profile_updates_timestamp(fastapi_server: str):
     headers = {"Authorization": f"Bearer {token_data['access_token']}"}
 
     # Get original profile
-    original = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=headers).json()
+    original = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers).json()
     original_updated_at = original["updated_at"]
 
     # Wait a bit
@@ -542,10 +542,10 @@ def test_update_profile_updates_timestamp(fastapi_server: str):
 
     # Update profile
     update_data = {"first_name": "NewName"}
-    requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
 
     # Get updated profile
-    updated = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=headers).json()
+    updated = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers).json()
     new_updated_at = updated["updated_at"]
 
     # Timestamp should be different
@@ -566,7 +566,7 @@ def test_password_change_updates_timestamp(fastapi_server: str):
     headers = {"Authorization": f"Bearer {token_data['access_token']}"}
 
     # Get original timestamp
-    original = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=headers).json()
+    original = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers).json()
     original_updated_at = original["updated_at"]
 
     # Wait a bit
@@ -579,18 +579,18 @@ def test_password_change_updates_timestamp(fastapi_server: str):
         "new_password": "NewPass456!",
         "confirm_new_password": "NewPass456!"
     }
-    requests.post(f"{fastapi_server.rstrip("/")}/profile/change-password", json=password_data, headers=headers)
+    requests.post(f'{fastapi_server.rstrip("/")}/profile/change-password', json=password_data, headers=headers)
 
     # Get new token with new password
     login_payload = {
         "username": user_data["username"],
         "password": "NewPass456!"
     }
-    new_token_data = requests.post(f"{fastapi_server.rstrip("/")}/auth/login", json=login_payload).json()
+    new_token_data = requests.post(f'{fastapi_server.rstrip("/")}/auth/login', json=login_payload).json()
     new_headers = {"Authorization": f"Bearer {new_token_data['access_token']}"}
 
     # Get updated profile
-    updated = requests.get(f"{fastapi_server.rstrip("/")}/profile/me", headers=new_headers).json()
+    updated = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=new_headers).json()
     new_updated_at = updated["updated_at"]
 
     # Timestamp should be different
@@ -616,7 +616,7 @@ def test_profile_update_with_null_values(fastapi_server: str):
 
     # Try update with null username (should preserve original)
     update_data = {"username": None, "first_name": "NewName"}
-    response = requests.put(f"{fastapi_server.rstrip("/")}/profile/me", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/profile/me', json=update_data, headers=headers)
 
     # Should either reject null or preserve original
     if response.status_code == 200:

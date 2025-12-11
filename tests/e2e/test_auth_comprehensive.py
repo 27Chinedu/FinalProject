@@ -8,8 +8,8 @@ import requests
 
 def register_and_login(fastapi_server: str, user_data: dict) -> dict:
     """Helper function to register and login a user"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
-    login_url = f"{fastapi_server.rstrip("/")}/auth/login"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
+    login_url = f'{fastapi_server.rstrip("/")}/auth/login'
 
     reg_response = requests.post(reg_url, json=user_data)
     assert reg_response.status_code == 201
@@ -28,7 +28,7 @@ def register_and_login(fastapi_server: str, user_data: dict) -> dict:
 
 def test_register_password_too_short(fastapi_server: str):
     """Test registration fails with password shorter than 8 characters"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "Short",
         "last_name": "Pass",
@@ -43,7 +43,7 @@ def test_register_password_too_short(fastapi_server: str):
 
 def test_register_password_no_uppercase(fastapi_server: str):
     """Test registration fails without uppercase letter in password"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "NoUpper",
         "last_name": "Case",
@@ -58,7 +58,7 @@ def test_register_password_no_uppercase(fastapi_server: str):
 
 def test_register_password_no_lowercase(fastapi_server: str):
     """Test registration fails without lowercase letter in password"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "NoLower",
         "last_name": "Case",
@@ -73,7 +73,7 @@ def test_register_password_no_lowercase(fastapi_server: str):
 
 def test_register_password_no_digit(fastapi_server: str):
     """Test registration fails without digit in password"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "NoDigit",
         "last_name": "User",
@@ -88,7 +88,7 @@ def test_register_password_no_digit(fastapi_server: str):
 
 def test_register_password_no_special_char(fastapi_server: str):
     """Test registration fails without special character in password"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "NoSpecial",
         "last_name": "Char",
@@ -103,7 +103,7 @@ def test_register_password_no_special_char(fastapi_server: str):
 
 def test_register_password_mismatch(fastapi_server: str):
     """Test registration fails when passwords don't match"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "Mismatch",
         "last_name": "Password",
@@ -118,7 +118,7 @@ def test_register_password_mismatch(fastapi_server: str):
 
 def test_register_username_too_short(fastapi_server: str):
     """Test registration fails with username shorter than 3 characters"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "Short",
         "last_name": "Username",
@@ -133,7 +133,7 @@ def test_register_username_too_short(fastapi_server: str):
 
 def test_register_invalid_email(fastapi_server: str):
     """Test registration fails with invalid email format"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "Invalid",
         "last_name": "Email",
@@ -148,7 +148,7 @@ def test_register_invalid_email(fastapi_server: str):
 
 def test_register_empty_first_name(fastapi_server: str):
     """Test registration fails with empty first name"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "",
         "last_name": "User",
@@ -163,7 +163,7 @@ def test_register_empty_first_name(fastapi_server: str):
 
 def test_register_empty_last_name(fastapi_server: str):
     """Test registration fails with empty last name"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "User",
         "last_name": "",
@@ -178,7 +178,7 @@ def test_register_empty_last_name(fastapi_server: str):
 
 def test_register_missing_fields(fastapi_server: str):
     """Test registration fails with missing required fields"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
 
     # Missing password
     user_data = {
@@ -197,8 +197,8 @@ def test_register_missing_fields(fastapi_server: str):
 
 def test_login_with_email(fastapi_server: str):
     """Test login works with email instead of username"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
-    login_url = f"{fastapi_server.rstrip("/")}/auth/login"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
+    login_url = f'{fastapi_server.rstrip("/")}/auth/login'
 
     unique_email = f"emaillogin{uuid4()}@example.com"
     user_data = {
@@ -225,7 +225,7 @@ def test_login_with_email(fastapi_server: str):
 
 def test_login_wrong_username(fastapi_server: str):
     """Test login fails with non-existent username"""
-    login_url = f"{fastapi_server.rstrip("/")}/auth/login"
+    login_url = f'{fastapi_server.rstrip("/")}/auth/login'
     login_payload = {
         "username": f"nonexistent_{uuid4()}",
         "password": "Password123!"
@@ -237,8 +237,8 @@ def test_login_wrong_username(fastapi_server: str):
 
 def test_login_wrong_password(fastapi_server: str):
     """Test login fails with wrong password"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
-    login_url = f"{fastapi_server.rstrip("/")}/auth/login"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
+    login_url = f'{fastapi_server.rstrip("/")}/auth/login'
 
     user_data = {
         "first_name": "Wrong",
@@ -262,7 +262,7 @@ def test_login_wrong_password(fastapi_server: str):
 
 def test_login_username_too_short(fastapi_server: str):
     """Test login validation fails with username too short"""
-    login_url = f"{fastapi_server.rstrip("/")}/auth/login"
+    login_url = f'{fastapi_server.rstrip("/")}/auth/login'
     login_payload = {
         "username": "ab",  # Too short
         "password": "Password123!"
@@ -273,7 +273,7 @@ def test_login_username_too_short(fastapi_server: str):
 
 def test_login_password_too_short(fastapi_server: str):
     """Test login validation fails with password too short"""
-    login_url = f"{fastapi_server.rstrip("/")}/auth/login"
+    login_url = f'{fastapi_server.rstrip("/")}/auth/login'
     login_payload = {
         "username": "validuser",
         "password": "short"  # Too short
@@ -288,8 +288,8 @@ def test_login_password_too_short(fastapi_server: str):
 
 def test_oauth2_form_login(fastapi_server: str):
     """Test OAuth2 form-based login endpoint"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
-    token_url = f"{fastapi_server.rstrip("/")}/auth/token"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
+    token_url = f'{fastapi_server.rstrip("/")}/auth/token'
 
     user_data = {
         "first_name": "OAuth",
@@ -318,7 +318,7 @@ def test_oauth2_form_login(fastapi_server: str):
 
 def test_oauth2_form_login_invalid(fastapi_server: str):
     """Test OAuth2 form login fails with invalid credentials"""
-    token_url = f"{fastapi_server.rstrip("/")}/auth/token"
+    token_url = f'{fastapi_server.rstrip("/")}/auth/token'
 
     form_data = {
         "username": "invaliduser",
@@ -334,14 +334,14 @@ def test_oauth2_form_login_invalid(fastapi_server: str):
 
 def test_access_protected_endpoint_without_token(fastapi_server: str):
     """Test accessing protected endpoint without token fails"""
-    calc_url = f"{fastapi_server.rstrip("/")}/calculations"
+    calc_url = f'{fastapi_server.rstrip("/")}/calculations'
 
     response = requests.get(calc_url)
     assert response.status_code == 401
 
 def test_access_protected_endpoint_invalid_token(fastapi_server: str):
     """Test accessing protected endpoint with invalid token fails"""
-    calc_url = f"{fastapi_server.rstrip("/")}/calculations"
+    calc_url = f'{fastapi_server.rstrip("/")}/calculations'
     headers = {"Authorization": "Bearer invalid_token_string"}
 
     response = requests.get(calc_url, headers=headers)
@@ -349,7 +349,7 @@ def test_access_protected_endpoint_invalid_token(fastapi_server: str):
 
 def test_access_protected_endpoint_malformed_token(fastapi_server: str):
     """Test accessing protected endpoint with malformed token fails"""
-    calc_url = f"{fastapi_server.rstrip("/")}/calculations"
+    calc_url = f'{fastapi_server.rstrip("/")}/calculations'
     headers = {"Authorization": "InvalidFormat"}
 
     response = requests.get(calc_url)
@@ -392,7 +392,7 @@ def test_token_contains_full_user_payload(fastapi_server: str):
 
 def test_duplicate_username_registration(fastapi_server: str):
     """Test that registering with duplicate username fails"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
 
     username = f"duplicate_{uuid4()}"
     user_data_1 = {
@@ -424,7 +424,7 @@ def test_duplicate_username_registration(fastapi_server: str):
 
 def test_duplicate_email_registration(fastapi_server: str):
     """Test that registering with duplicate email fails"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
 
     email = f"duplicate{uuid4()}@example.com"
     user_data_1 = {
@@ -477,7 +477,7 @@ def test_user_cannot_access_other_user_calculation(fastapi_server: str):
         "type": "addition",
         "inputs": [1, 2, 3]
     }
-    calc_response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers1)
+    calc_response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers1)
     calc_id = calc_response.json()["id"]
 
     # Create user 2
@@ -493,7 +493,7 @@ def test_user_cannot_access_other_user_calculation(fastapi_server: str):
     headers2 = {"Authorization": f"Bearer {token2_data['access_token']}"}
 
     # User 2 tries to access User 1's calculation
-    response = requests.get(f"{fastapi_server.rstrip("/")}/calculations/{calc_id}", headers=headers2)
+    response = requests.get(f'{fastapi_server.rstrip("/")}/calculations/{calc_id}', headers=headers2)
     assert response.status_code == 404  # Not found (for security)
 
 def test_user_cannot_update_other_user_calculation(fastapi_server: str):
@@ -515,7 +515,7 @@ def test_user_cannot_update_other_user_calculation(fastapi_server: str):
         "type": "addition",
         "inputs": [1, 2, 3]
     }
-    calc_response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers1)
+    calc_response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers1)
     calc_id = calc_response.json()["id"]
 
     # Create user 2
@@ -532,7 +532,7 @@ def test_user_cannot_update_other_user_calculation(fastapi_server: str):
 
     # User 2 tries to update User 1's calculation
     update_data = {"inputs": [5, 6, 7]}
-    response = requests.put(f"{fastapi_server.rstrip("/")}/calculations/{calc_id}", json=update_data, headers=headers2)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/calculations/{calc_id}', json=update_data, headers=headers2)
     assert response.status_code == 404
 
 def test_user_cannot_delete_other_user_calculation(fastapi_server: str):
@@ -554,7 +554,7 @@ def test_user_cannot_delete_other_user_calculation(fastapi_server: str):
         "type": "addition",
         "inputs": [1, 2, 3]
     }
-    calc_response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers1)
+    calc_response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers1)
     calc_id = calc_response.json()["id"]
 
     # Create user 2
@@ -570,7 +570,7 @@ def test_user_cannot_delete_other_user_calculation(fastapi_server: str):
     headers2 = {"Authorization": f"Bearer {token2_data['access_token']}"}
 
     # User 2 tries to delete User 1's calculation
-    response = requests.delete(f"{fastapi_server.rstrip("/")}/calculations/{calc_id}", headers=headers2)
+    response = requests.delete(f'{fastapi_server.rstrip("/")}/calculations/{calc_id}', headers=headers2)
     assert response.status_code == 404
 
 # ============================================================================
@@ -579,31 +579,31 @@ def test_user_cannot_delete_other_user_calculation(fastapi_server: str):
 
 def test_home_page_accessible(fastapi_server: str):
     """Test home page is accessible"""
-    response = requests.get(f"{fastapi_server.rstrip("/")}/")
+    response = requests.get(f'{fastapi_server.rstrip("/")}/')
     assert response.status_code == 200
     assert "text/html" in response.headers.get("content-type", "")
 
 def test_login_page_accessible(fastapi_server: str):
     """Test login page is accessible"""
-    response = requests.get(f"{fastapi_server.rstrip("/")}/login")
+    response = requests.get(f'{fastapi_server.rstrip("/")}/login')
     assert response.status_code == 200
     assert "text/html" in response.headers.get("content-type", "")
 
 def test_register_page_accessible(fastapi_server: str):
     """Test register page is accessible"""
-    response = requests.get(f"{fastapi_server.rstrip("/")}/register")
+    response = requests.get(f'{fastapi_server.rstrip("/")}/register')
     assert response.status_code == 200
     assert "text/html" in response.headers.get("content-type", "")
 
 def test_dashboard_page_accessible(fastapi_server: str):
     """Test dashboard page is accessible"""
-    response = requests.get(f"{fastapi_server.rstrip("/")}/dashboard")
+    response = requests.get(f'{fastapi_server.rstrip("/")}/dashboard')
     assert response.status_code == 200
     assert "text/html" in response.headers.get("content-type", "")
 
 def test_profile_page_accessible(fastapi_server: str):
     """Test profile page is accessible"""
-    response = requests.get(f"{fastapi_server.rstrip("/")}/profile")
+    response = requests.get(f'{fastapi_server.rstrip("/")}/profile')
     assert response.status_code == 200
     assert "text/html" in response.headers.get("content-type", "")
 
@@ -630,7 +630,7 @@ def test_calculation_invalid_type(fastapi_server: str):
         "inputs": [1, 2, 3]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code in [400, 422]
 
 def test_calculation_with_string_inputs(fastapi_server: str):
@@ -652,7 +652,7 @@ def test_calculation_with_string_inputs(fastapi_server: str):
         "inputs": ["abc", "def"]
     }
 
-    response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     assert response.status_code == 422
 
 # ============================================================================
@@ -661,9 +661,9 @@ def test_calculation_with_string_inputs(fastapi_server: str):
 
 def test_last_login_updated_on_login(fastapi_server: str):
     """Test that last_login is updated when user logs in"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
-    login_url = f"{fastapi_server.rstrip("/")}/auth/login"
-    profile_url = f"{fastapi_server.rstrip("/")}/profile/me"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
+    login_url = f'{fastapi_server.rstrip("/")}/auth/login'
+    profile_url = f'{fastapi_server.rstrip("/")}/profile/me'
 
     user_data = {
         "first_name": "Last",
@@ -730,17 +730,17 @@ def test_update_calculation_empty_inputs(fastapi_server: str):
         "type": "addition",
         "inputs": [1, 2, 3]
     }
-    calc_response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    calc_response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     calc_id = calc_response.json()["id"]
 
     # Try to update with empty inputs
     update_data = {"inputs": []}
-    response = requests.put(f"{fastapi_server.rstrip("/")}/calculations/{calc_id}", json=update_data, headers=headers)
+    response = requests.put(f'{fastapi_server.rstrip("/")}/calculations/{calc_id}', json=update_data, headers=headers)
     assert response.status_code == 422
 
 def test_registration_response_structure(fastapi_server: str):
     """Test registration response has correct structure"""
-    reg_url = f"{fastapi_server.rstrip("/")}/auth/register"
+    reg_url = f'{fastapi_server.rstrip("/")}/auth/register'
     user_data = {
         "first_name": "Structure",
         "last_name": "Test",
@@ -783,10 +783,10 @@ def test_calculation_result_persistence(fastapi_server: str):
         "type": "multiplication",
         "inputs": [3, 4, 5]
     }
-    create_response = requests.post(f"{fastapi_server.rstrip("/")}/calculations", json=calc_data, headers=headers)
+    create_response = requests.post(f'{fastapi_server.rstrip("/")}/calculations', json=calc_data, headers=headers)
     calc_id = create_response.json()["id"]
     expected_result = 60  # 3 * 4 * 5
 
     # Retrieve and verify result
-    get_response = requests.get(f"{fastapi_server.rstrip("/")}/calculations/{calc_id}", headers=headers)
+    get_response = requests.get(f'{fastapi_server.rstrip("/")}/calculations/{calc_id}', headers=headers)
     assert get_response.json()["result"] == expected_result
