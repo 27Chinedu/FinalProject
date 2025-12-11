@@ -476,7 +476,7 @@ def test_profile_calculation_count_accuracy(fastapi_server: str):
     # Delete one calculation
     calcs = requests.get(f'{fastapi_server.rstrip("/")}/calculations', headers=headers).json()
     if calcs:
-        requests.delete(f'{fastapi_server.rstrip("/")}/calculations/{calcs[0]['id']}', headers=headers)
+        requests.delete(f'{fastapi_server.rstrip("/")}/calculations/{calcs[0]["id"]}', headers=headers)
 
     # Check count is now 2
     profile = requests.get(f'{fastapi_server.rstrip("/")}/profile/me', headers=headers).json()
