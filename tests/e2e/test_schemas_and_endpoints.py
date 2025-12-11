@@ -436,7 +436,7 @@ def test_calculations_require_auth():
 def test_get_profile():
     """Test getting profile"""
     headers = get_auth_headers()
-    response = client.get("/api/profile", headers=headers)
+    response = client.get("/profile/me", headers=headers)
     assert response.status_code == 200
     data = response.json()
     assert "username" in data
@@ -453,7 +453,7 @@ def test_update_profile():
         "username": new_username,
         "first_name": "NewFirst"
     }
-    response = client.put("/api/profile", json=update_data, headers=headers)
+    response = client.put("/profile/me", json=update_data, headers=headers)
     assert response.status_code == 200
     assert response.json()["username"] == new_username
 
@@ -461,7 +461,7 @@ def test_update_profile():
 def test_update_profile_no_fields():
     """Test update with no fields fails"""
     headers = get_auth_headers()
-    response = client.put("/api/profile", json={}, headers=headers)
+    response = client.put("/profile/me", json={}, headers=headers)
     assert response.status_code == 422
 
 
@@ -473,7 +473,7 @@ def test_change_password():
         "new_password": "NewPass123!",
         "confirm_new_password": "NewPass123!"
     }
-    response = client.put("/api/profile/password", json=password_data, headers=headers)
+    response = client.post("/profile/change-password", json=password_data, headers=headers)
     assert response.status_code == 200
 
 
@@ -485,5 +485,5 @@ def test_change_password_wrong_current():
         "new_password": "NewPass123!",
         "confirm_new_password": "NewPass123!"
     }
-    response = client.put("/api/profile/password", json=password_data, headers=headers)
+    response = client.post("/profile/change-password", json=password_data, headers=headers)
     assert response.status_code == 401
