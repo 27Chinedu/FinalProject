@@ -2,6 +2,8 @@
 
 A production-ready FastAPI application featuring JWT-based authentication, calculation management with full BREAD operations, comprehensive user profile management, PostgreSQL database integration with polymorphic calculation models, automated CI/CD deployment pipeline with security scanning, and comprehensive test coverage (unit, integration, and end-to-end tests).
 
+Link to DockerHub: https://hub.docker.com/repository/docker/cerechukwu27/calculator-app/general
+
 ## Table of Contents
 
 - [Overview](#overview)
